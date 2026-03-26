@@ -1,0 +1,18 @@
+Comando para correr nuestro el entorno virtual - venv:
+
+.\venv\Scripts\Activate.ps1
+
+Este Script nos da un resultado de una consulta SQL mostrado en Python.
+
+from db.connection import get_connection
+
+conn = get_connection()
+cursor = conn.cursor()
+
+cursor.execute("SELECT * FROM orders")
+pedidos = cursor.fetchall()
+
+for pedido in pedidos:
+    print(dict(pedido))
+
+conn.close()

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tienda PC Local</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="container nav">
+      <h1>Tienda PC Local</h1>
+      <nav>
+        <a href="admin-orders.html" class="nav-link">Pedidos</a>
+        <a href="cart.html" class="cart-link">
+          <img src="https://cdn-icons-png.flaticon.com/512/3144/3144456.png" alt="Carrito">
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div>
+        <span class="badge">Componentes para tu próxima PC</span>
+        <h2>Encuentra procesadores, gráficas, RAM y más.</h2>
+        <p>Catálogo dinámico con carrito de compras y gestión básica de pedidos.</p>
+      </div>
+    </section>
+
+    <section class="filters">
+      <label for="categorySelect">Filtrar por categoría:</label>
+      <select id="categorySelect">
+        <option value="">Todas</option>
+      </select>
+    </section>
+
+    <section id="productGrid" class="product-grid"></section>
+  </main>
+  <footer class="footer">
+    <div class="footer-container">
+
+      <div class="footer-brand">
+        <h2>PC Local</h2>
+        <p>
+          Creamos experiencias modernas, funcionales y atractivas para la web.
+        </p>
+      </div>
+
+      <div class="footer-links">
+        <h3>Enlaces</h3>
+        <ul>
+          <li><a href="./index.html">Inicio</a></li>
+          <li><a href="./servicios.html">Servicios</a></li>
+          <li><a href="./nosotros.html">Nosotros</a></li>
+          <li><a href="./contacto.html">Contacto</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-contact">
+        <h3>Contacto</h3>
+        <p>Email: Pclocal@gmail.com</p>
+        <p>Tel: +506 8681-1518</p>
+        <p>San José, Costa Rica</p>
+      </div>
+
+      <div class="footer-social">
+        <h3>Síguenos</h3>
+        <div class="social-icons">
+          <a href="https://www.facebook.com/lex.rojas.963?locale=es_LA">Facebook</a>
+          <a href="https://www.instagram.com/lexrojas_">Instagram</a>
+          <a href="https://www.linkedin.com/school/uisil-universidad/">LinkedIn</a>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2026 PC Local. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <script src="../js/main.js"></script>
+</body>
+
+</html>

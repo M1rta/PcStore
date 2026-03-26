@@ -1,0 +1,11 @@
+{
+  "name": "tienda",
+  "version": "1.0.0",
+  "description": "Frontend estático para tienda de componentes",
+  "scripts": {
+    "start": "echo Usa Live Server para abrir frontend/public/index.html",
+    "sync": "python backend\\db\\sync.py",
+    "on": "python backend\\app.py"
+  }
+  
+}

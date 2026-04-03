@@ -56,7 +56,11 @@ function renderProducts(products) {
       <img src="${product.image}" alt="${product.name}">
       <div class="content">
         <p class="small">${product.category}</p>
-        <h3>${product.name}</h3>
+        <h3>
+        <a href="${product.product_url}" target="_blank" rel="noopener noreferrer">
+        ${product.name}
+        </a>
+        </h3>
         <p>${product.description}</p>
         <div class="price">$${product.price.toFixed(2)}</div>
         <button class="btn" data-id="${product.id}">Agregar al carrito</button>

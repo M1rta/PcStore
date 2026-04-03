@@ -4,7 +4,7 @@
   "description": "Frontend estático para tienda de componentes",
   "scripts": {
     "start": "echo Usa Live Server para abrir frontend/public/index.html",
-    "sync": "python backend\\db\\sync.py",
+    "sync": "python backend\\db\\connection.py",
     "on": "python backend\\app.py"
   }
   

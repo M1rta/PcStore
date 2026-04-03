@@ -4,7 +4,7 @@ from db.connection import get_connection
 def get_all_products(category_id=None):
     conn = get_connection()
     query = '''
-        SELECT p.id, p.name, p.description, p.price, p.stock, p.image, p.category_id, c.name AS category
+        SELECT p.id, p.name, p.description, p.price, p.stock, p.image, p.product_url, p.category_id, c.name AS category
         FROM products p
         INNER JOIN categories c ON p.category_id = c.id
     '''

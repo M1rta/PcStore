@@ -7,7 +7,7 @@ async function deleteOrder(orderId) {
   try {
     const res = await fetch(`${API_URL}/orders/${orderId}`, { method: 'DELETE' });
 
-    const text = await res.text(); // <- para ver qué devuelve aunque no sea JSON
+    const text = await res.text();
     console.log("DELETE status:", res.status);
     console.log("DELETE response:", text);
 

@@ -1,43 +1,41 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TechHardware</title>
-  <link rel="stylesheet" href="/backend/static/css/styles.css" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
 </head>
-
 <body>
   <header class="site-header">
-    
     <div class="container nav">
       <h1>TechHardware</h1>
       <nav>
-        <a href="admin-orders.html" class="nav-link">Pedidos</a>
-        <a href="cart.html" class="cart-link">
+        <span id="welcomeUser" class="nav-link"></span>
+        <a href="{{ url_for('orders_page') }}" class="nav-link">Mis pedidos</a>
+        <a href="{{ url_for('cart_page') }}" class="cart-link">
           <img src="https://cdn-icons-png.flaticon.com/512/3144/3144456.png" alt="Carrito">
         </a>
+        <button type="button" id="logoutBtn" class="btn">Cerrar sesion</button>
       </nav>
     </div>
 
     <div class="container">
       <section class="hero">
         <div>
-          <span class="badge">Componentes para tu próxima PC</span>
-          <h2>Encuentra procesadores, gráficas, RAM y más.</h2>
-          <p>Catálogo dinámico con carrito de compras y gestión básica de pedidos.</p>
+          <span class="badge">Componentes para tu proxima PC</span>
+          <h2>Compra hardware con tu propia cuenta en TechHardware.</h2>
+          <p>Explora el catalogo, guarda productos en tu carrito y registra tus pedidos para revisarlos cuando quieras.</p>
         </div>
       </section>
 
       <section class="filters">
-        <label for="categorySelect">Filtrar por categoría:</label>
+        <label for="categorySelect">Filtrar por categoria:</label>
         <select id="categorySelect">
           <option value="">Todas</option>
         </select>
       </section>
     </div>
-
   </header>
 
   <main class="container">
@@ -46,37 +44,33 @@
 
   <footer class="footer">
     <div class="footer-container">
-
       <div class="footer-brand">
         <h2>TechHardware</h2>
-        <p>Creamos experiencias modernas, funcionales y atractivas para la web.</p>
+        <p>Tu tienda para armar, mejorar y disfrutar tu proxima PC.</p>
       </div>
-
 
       <div class="footer-contact">
         <h3>Contacto</h3>
         <p>Email: TechHardware@gmail.com</p>
         <p>Tel: +506 8681-1518</p>
-        <p>San José, Costa Rica</p>
+        <p>San Jose, Costa Rica</p>
       </div>
 
       <div class="footer-social">
-        <h3>Síguenos</h3>
+        <h3>Siguenos</h3>
         <div class="social-icons">
           <a href="https://www.facebook.com/lex.rojas.963?locale=es_LA">Facebook</a>
           <a href="https://www.instagram.com/lexrojas_">Instagram</a>
           <a href="https://www.linkedin.com/school/uisil-universidad/">LinkedIn</a>
         </div>
       </div>
-
     </div>
 
     <div class="footer-bottom">
-      <p>© 2026 TechHardware. Todos los derechos reservados.</p>
+      <p>&copy; 2026 TechHardware. Todos los derechos reservados.</p>
     </div>
   </footer>
 
-  <script src="/backend/static/js/main.js"></script>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
-
 </html>

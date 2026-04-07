@@ -1,12 +1,12 @@
 from db.connection import get_connection
 
 
-def create_order(customer_name, customer_email, customer_phone, total, items):
+def create_order(user_id, customer_name, customer_email, customer_phone, total, items):
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute(
-        'INSERT INTO orders (customer_name, customer_email, customer_phone, total) VALUES (?, ?, ?, ?)',
-        (customer_name, customer_email, customer_phone, total),
+        'INSERT INTO orders (user_id, customer_name, customer_email, customer_phone, total) VALUES (?, ?, ?, ?, ?)',
+        (user_id, customer_name, customer_email, customer_phone, total),
     )
     order_id = cursor.lastrowid
 
@@ -24,14 +24,17 @@ def create_order(customer_name, customer_email, customer_phone, total, items):
     return order_id
 
 
-def get_all_orders():
+def get_orders_by_user(user_id):
     conn = get_connection()
     orders = conn.execute(
         '''
-        SELECT id, customer_name, customer_email, customer_phone, status, created_at, total
+        SELECT id, user_id, customer_name, customer_email, customer_phone, status, created_at, total
         FROM orders
+        WHERE user_id = ?
         ORDER BY id DESC
         '''
+        ,
+        (user_id,),
     ).fetchall()
 
     result = []
@@ -51,3 +54,22 @@ def get_all_orders():
 
     conn.close()
     return result
+
+
+def delete_order_by_user(order_id, user_id):
+    conn = get_connection()
+    cursor = conn.cursor()
+    row = cursor.execute(
+        'SELECT id FROM orders WHERE id = ? AND user_id = ?',
+        (order_id, user_id),
+    ).fetchone()
+    if not row:
+        conn.close()
+        return False
+
+    cursor.execute('DELETE FROM order_details WHERE order_id = ?', (order_id,))
+    cursor.execute('DELETE FROM orders WHERE id = ? AND user_id = ?', (order_id, user_id))
+    deleted = cursor.rowcount
+    conn.commit()
+    conn.close()
+    return deleted > 0

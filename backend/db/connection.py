@@ -14,6 +14,14 @@ def get_connection():
 # ESQUEMA Y DATOS INICIALES
 # ==========================================
 SCHEMA_SQL = '''
+CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    email TEXT NOT NULL UNIQUE,
+    password_hash TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE TABLE IF NOT EXISTS categories (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL UNIQUE
@@ -33,12 +41,14 @@ CREATE TABLE IF NOT EXISTS products (
 
 CREATE TABLE IF NOT EXISTS orders (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER,
     customer_name TEXT NOT NULL,
     customer_email TEXT NOT NULL,
     customer_phone TEXT NOT NULL,
     status TEXT NOT NULL DEFAULT 'pendiente',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    total REAL NOT NULL
+    total REAL NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
 CREATE TABLE IF NOT EXISTS order_details (
@@ -80,6 +90,10 @@ def initialize_database():
     conn = get_connection()
     cursor = conn.cursor()
     cursor.executescript(SCHEMA_SQL)
+
+    order_columns = {row['name'] for row in cursor.execute("PRAGMA table_info(orders)").fetchall()}
+    if 'user_id' not in order_columns:
+        cursor.execute('ALTER TABLE orders ADD COLUMN user_id INTEGER REFERENCES users(id)')
 
     cursor.execute('SELECT COUNT(*) AS total FROM categories')
     if cursor.fetchone()['total'] == 0:

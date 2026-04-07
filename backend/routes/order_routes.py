@@ -9,5 +9,5 @@ order_bp.route('/orders', methods=['GET'])(list_orders)
 
 @order_bp.route("/orders/<int:order_id>", methods=["DELETE"])
 def api_delete_order(order_id):
-    result = delete_order_api(order_id)
-    return jsonify(result), 200
+    result, status_code = delete_order_api(order_id)
+    return jsonify(result), status_code

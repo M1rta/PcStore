@@ -1,11 +1,62 @@
-const API_URL = 'http://127.0.0.1:5000/api';
+const API_URL = '/api';
+
+function getStoredUser() {
+  return JSON.parse(localStorage.getItem('pc_store_user') || 'null');
+}
+
+function getCartKey(userId) {
+  return `pc_store_cart_${userId}`;
+}
+
+function getCart(userId) {
+  return JSON.parse(localStorage.getItem(getCartKey(userId)) || '[]');
+}
+
+function saveCart(userId, cart) {
+  localStorage.setItem(getCartKey(userId), JSON.stringify(cart));
+}
+
+function updateUserUI(user) {
+  const welcomeUser = document.getElementById('welcomeUser');
+  if (welcomeUser) {
+    welcomeUser.textContent = `Hola, ${user.name}`;
+  }
+}
+
+async function requireSession() {
+  const response = await fetch(`${API_URL}/auth/session`, {
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    localStorage.removeItem('pc_store_user');
+    window.location.href = '/login';
+    throw new Error('Usuario no autenticado');
+  }
+
+  const result = await response.json();
+  localStorage.setItem('pc_store_user', JSON.stringify(result.user));
+  updateUserUI(result.user);
+  return result.user;
+}
+
+async function logout() {
+  await fetch(`${API_URL}/auth/logout`, {
+    method: 'POST',
+    credentials: 'include',
+  });
+  localStorage.removeItem('pc_store_user');
+  window.location.href = '/login';
+}
 
 async function loadCategories() {
-  const response = await fetch(`${API_URL}/categories`);
+  const response = await fetch(`${API_URL}/categories`, {
+    credentials: 'include',
+  });
   const result = await response.json();
   const select = document.getElementById('categorySelect');
 
-  result.data.forEach(category => {
+  result.data.forEach((category) => {
     const option = document.createElement('option');
     option.value = category.id;
     option.textContent = category.name;
@@ -13,17 +64,9 @@ async function loadCategories() {
   });
 }
 
-function getCart() {
-  return JSON.parse(localStorage.getItem('pc_store_cart') || '[]');
-}
-
-function saveCart(cart) {
-  localStorage.setItem('pc_store_cart', JSON.stringify(cart));
-}
-
-function addToCart(product) {
-  const cart = getCart();
-  const existing = cart.find(item => item.product_id === product.id);
+function addToCart(user, product) {
+  const cart = getCart(user.id);
+  const existing = cart.find((item) => item.product_id === product.id);
 
   if (existing) {
     existing.quantity += 1;
@@ -36,20 +79,20 @@ function addToCart(product) {
     });
   }
 
-  saveCart(cart);
-  alert('Producto agregado al carrito');
+  saveCart(user.id, cart);
+  alert('Producto agregado a tu carrito.');
 }
 
-function renderProducts(products) {
+function renderProducts(products, user) {
   const grid = document.getElementById('productGrid');
   grid.innerHTML = '';
 
   if (!products.length) {
-    grid.innerHTML = '<div class="empty">No hay productos para esta categoría.</div>';
+    grid.innerHTML = '<div class="empty">No hay productos para esta categoria.</div>';
     return;
   }
 
-  products.forEach(product => {
+  products.forEach((product) => {
     const card = document.createElement('article');
     card.className = 'product-card';
     card.innerHTML = `
@@ -57,9 +100,9 @@ function renderProducts(products) {
       <div class="content">
         <p class="small">${product.category}</p>
         <h3>
-        <a href="${product.product_url}" target="_blank" rel="noopener noreferrer">
-        ${product.name}
-        </a>
+          <a href="${product.product_url}" target="_blank" rel="noopener noreferrer">
+            ${product.name}
+          </a>
         </h3>
         <p>${product.description}</p>
         <div class="price">$${product.price.toFixed(2)}</div>
@@ -69,26 +112,30 @@ function renderProducts(products) {
     grid.appendChild(card);
   });
 
-  document.querySelectorAll('[data-id]').forEach(button => {
+  document.querySelectorAll('[data-id]').forEach((button) => {
     button.addEventListener('click', () => {
-      const product = products.find(p => p.id === Number(button.dataset.id));
-      addToCart(product);
+      const product = products.find((item) => item.id === Number(button.dataset.id));
+      addToCart(user, product);
     });
   });
 }
 
-async function loadProducts(categoryId = '') {
+async function loadProducts(user, categoryId = '') {
   const url = categoryId ? `${API_URL}/products?category_id=${categoryId}` : `${API_URL}/products`;
-  const response = await fetch(url);
+  const response = await fetch(url, {
+    credentials: 'include',
+  });
   const result = await response.json();
-  renderProducts(result.data);
+  renderProducts(result.data, user);
 }
 
 (async function init() {
+  const user = await requireSession();
+  document.getElementById('logoutBtn')?.addEventListener('click', logout);
   await loadCategories();
-  await loadProducts();
+  await loadProducts(user);
 
-  document.getElementById('categorySelect').addEventListener('change', (e) => {
-    loadProducts(e.target.value);
+  document.getElementById('categorySelect').addEventListener('change', (event) => {
+    loadProducts(user, event.target.value);
   });
 })();

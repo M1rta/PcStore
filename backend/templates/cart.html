@@ -1,20 +1,20 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Carrito</title>
-  <link rel="stylesheet" href="/backend/static/css/styles.css" />
+  <title>Mi carrito | TechHardware</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
 </head>
-
 <body>
   <header class="site-header">
     <div class="container nav">
-      <h1>Carrito</h1>
+      <h1>Mi carrito</h1>
       <nav>
-        <a href="index.html">Catálogo</a>
-        <a href="admin-orders.html" class="nav-link">Pedidos</a>
+        <span id="welcomeUser" class="nav-link"></span>
+        <a href="{{ url_for('catalog_page') }}">Catalogo</a>
+        <a href="{{ url_for('orders_page') }}" class="nav-link">Mis pedidos</a>
+        <button type="button" id="logoutBtn" class="btn">Cerrar sesion</button>
       </nav>
     </div>
   </header>
@@ -22,11 +22,10 @@
   <main class="container">
     <div id="cartContainer" class="cart-list"></div>
     <div class="cart-actions">
-      <a class="btn" href="checkout.html">Ir a finalizar compra</a>
+      <a class="btn" href="{{ url_for('checkout_page') }}">Ir a finalizar compra</a>
     </div>
   </main>
 
-  <script src="/backend/static/js/cart.js"></script>
+  <script src="{{ url_for('static', filename='js/cart.js') }}"></script>
 </body>
-
 </html>

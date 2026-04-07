@@ -1,45 +1,84 @@
-const API_URL = 'http://localhost:5000/api';
+const API_URL = '/api';
+
+function updateUserUI(user) {
+  const welcomeUser = document.getElementById('welcomeUser');
+  if (welcomeUser) {
+    welcomeUser.textContent = `Hola, ${user.name}`;
+  }
+}
+
+async function requireSession() {
+  const response = await fetch(`${API_URL}/auth/session`, {
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    localStorage.removeItem('pc_store_user');
+    window.location.href = '/login';
+    throw new Error('Usuario no autenticado');
+  }
+
+  const result = await response.json();
+  localStorage.setItem('pc_store_user', JSON.stringify(result.user));
+  updateUserUI(result.user);
+}
+
+async function logout() {
+  await fetch(`${API_URL}/auth/logout`, {
+    method: 'POST',
+    credentials: 'include',
+  });
+  localStorage.removeItem('pc_store_user');
+  window.location.href = '/login';
+}
 
 async function deleteOrder(orderId) {
-  const confirmDelete = confirm(`¿Eliminar el pedido #${orderId}? Esta acción no se puede deshacer.`);
+  const confirmDelete = confirm(`Eliminar el pedido #${orderId}? Esta accion no se puede deshacer.`);
   if (!confirmDelete) return;
 
   try {
-    const res = await fetch(`${API_URL}/orders/${orderId}`, { method: 'DELETE' });
+    const response = await fetch(`${API_URL}/orders/${orderId}`, {
+      method: 'DELETE',
+      credentials: 'include',
+    });
 
-    const text = await res.text();
-    console.log("DELETE status:", res.status);
-    console.log("DELETE response:", text);
-
-    if (!res.ok) {
-      alert(`Error ${res.status}: ${text}`);
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      alert(result.message || 'No se pudo eliminar el pedido.');
       return;
     }
 
-    alert("✅ Pedido eliminado");
+    alert('Pedido eliminado correctamente.');
     loadOrders();
-  } catch (err) {
-    console.error(err);
-    alert("Error de conexión (revisa CORS o que el backend esté corriendo)");
+  } catch (error) {
+    console.error(error);
+    alert('Error de conexion con el servidor.');
   }
 }
 
 async function loadOrders() {
-  const response = await fetch(`${API_URL}/orders`);
+  const response = await fetch(`${API_URL}/orders`, {
+    credentials: 'include',
+  });
   const result = await response.json();
   const container = document.getElementById('ordersContainer');
 
-  if (!result.data.length) {
-    container.innerHTML = '<div class="empty">No hay pedidos registrados.</div>';
+  if (!response.ok) {
+    container.innerHTML = '<div class="empty">No se pudieron cargar tus pedidos.</div>';
     return;
   }
 
-  container.innerHTML = result.data.map(order => `
+  if (!result.data.length) {
+    container.innerHTML = '<div class="empty">Todavia no has realizado pedidos.</div>';
+    return;
+  }
+
+  container.innerHTML = result.data.map((order) => `
     <article class="order-card">
       <h3>Pedido #${order.id}</h3>
       <p><strong>Cliente:</strong> ${order.customer_name}</p>
       <p><strong>Correo:</strong> ${order.customer_email}</p>
-      <p><strong>Teléfono:</strong> ${order.customer_phone}</p>
+      <p><strong>Telefono:</strong> ${order.customer_phone}</p>
       <p><strong>Estado:</strong> ${order.status}</p>
       <p><strong>Fecha:</strong> ${order.created_at}</p>
       <p><strong>Total:</strong> $${Number(order.total).toFixed(2)}</p>
@@ -47,7 +86,7 @@ async function loadOrders() {
       <div>
         <strong>Productos:</strong>
         <ul>
-          ${order.items.map(item => `<li>${item.product_name} x${item.quantity} - $${Number(item.subtotal).toFixed(2)}</li>`).join('')}
+          ${order.items.map((item) => `<li>${item.product_name} x${item.quantity} - $${Number(item.subtotal).toFixed(2)}</li>`).join('')}
         </ul>
       </div>
 
@@ -58,4 +97,10 @@ async function loadOrders() {
   `).join('');
 }
 
-loadOrders();
+window.deleteOrder = deleteOrder;
+
+(async function init() {
+  await requireSession();
+  document.getElementById('logoutBtn')?.addEventListener('click', logout);
+  loadOrders();
+})();

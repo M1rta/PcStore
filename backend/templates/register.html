@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Crea tu cuenta en TechHardware para comprar y llevar tus pedidos." />
+  <meta name="keywords" content="registro, tienda, tecnologia, componentes, Costa Rica" />
+  <title>Registro | TechHardware</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}" />
+</head>
+<body>
+  <main class="register-container">
+    <section class="register-card">
+      <h1 class="register-title">Crear cuenta</h1>
+      <p class="register-subtitle">Registrate para comprar en TechHardware y guardar tus pedidos en tu propia cuenta.</p>
+
+      <form id="register-form" autocomplete="on">
+        <div class="input-group">
+          <input type="text" id="register-name" placeholder="Nombre completo" aria-label="Nombre completo" required />
+        </div>
+
+        <div class="input-group">
+          <input type="email" id="register-email" placeholder="Correo electronico" aria-label="Correo electronico" required />
+        </div>
+
+        <div class="input-group">
+          <input type="password" id="register-password" placeholder="Contrasena" aria-label="Contrasena" required />
+        </div>
+
+        <div class="input-group">
+          <input type="password" id="register-password2" placeholder="Confirmar contrasena" aria-label="Confirmar contrasena" required />
+        </div>
+
+        <button type="submit" class="register-btn" id="btn-register">Crear cuenta</button>
+
+        <div class="register-link">
+          Ya tienes cuenta? <a href="{{ url_for('login_page') }}">Iniciar sesion</a>
+        </div>
+      </form>
+    </section>
+  </main>
+  <script src="{{ url_for('static', filename='js/register.js') }}"></script>
+</body>
+</html>

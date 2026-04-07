@@ -1,20 +1,61 @@
+const API_URL = '/api';
+
+let currentUser = null;
+
+function getCartKey(userId) {
+  return `pc_store_cart_${userId}`;
+}
+
 function getCart() {
-  return JSON.parse(localStorage.getItem('pc_store_cart') || '[]');
+  return JSON.parse(localStorage.getItem(getCartKey(currentUser.id)) || '[]');
 }
 
 function saveCart(cart) {
-  localStorage.setItem('pc_store_cart', JSON.stringify(cart));
+  localStorage.setItem(getCartKey(currentUser.id), JSON.stringify(cart));
+}
+
+function updateUserUI(user) {
+  const welcomeUser = document.getElementById('welcomeUser');
+  if (welcomeUser) {
+    welcomeUser.textContent = `Hola, ${user.name}`;
+  }
+}
+
+async function requireSession() {
+  const response = await fetch(`${API_URL}/auth/session`, {
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    localStorage.removeItem('pc_store_user');
+    window.location.href = '/login';
+    throw new Error('Usuario no autenticado');
+  }
+
+  const result = await response.json();
+  currentUser = result.user;
+  localStorage.setItem('pc_store_user', JSON.stringify(result.user));
+  updateUserUI(result.user);
+}
+
+async function logout() {
+  await fetch(`${API_URL}/auth/logout`, {
+    method: 'POST',
+    credentials: 'include',
+  });
+  localStorage.removeItem('pc_store_user');
+  window.location.href = '/login';
 }
 
 function removeItem(productId) {
-  const cart = getCart().filter(item => item.product_id !== productId);
+  const cart = getCart().filter((item) => item.product_id !== productId);
   saveCart(cart);
   renderCart();
 }
 
 function changeQuantity(productId, value) {
   const cart = getCart();
-  const item = cart.find(entry => entry.product_id === productId);
+  const item = cart.find((entry) => entry.product_id === productId);
   if (!item) return;
 
   item.quantity += value;
@@ -32,14 +73,14 @@ function renderCart() {
   const cart = getCart();
 
   if (!cart.length) {
-    container.innerHTML = '<div class="empty">Tu carrito está vacío.</div>';
+    container.innerHTML = '<div class="empty">Tu carrito esta vacio.</div>';
     return;
   }
 
   let total = 0;
   container.innerHTML = '';
 
-  cart.forEach(item => {
+  cart.forEach((item) => {
     const subtotal = item.price * item.quantity;
     total += subtotal;
 
@@ -63,4 +104,11 @@ function renderCart() {
   container.appendChild(totalBox);
 }
 
-renderCart();
+window.removeItem = removeItem;
+window.changeQuantity = changeQuantity;
+
+(async function init() {
+  await requireSession();
+  document.getElementById('logoutBtn')?.addEventListener('click', logout);
+  renderCart();
+})();

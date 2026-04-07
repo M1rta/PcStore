@@ -12,8 +12,10 @@
       <h1>Mis pedidos</h1>
       <nav>
         <span id="welcomeUser" class="nav-link"></span>
-        <a href="{{ url_for('catalog_page') }}">Catalogo</a>
-        <a href="{{ url_for('cart_page') }}">Carrito</a>
+        <a href="{{ url_for('catalog_page') }}" class="nav-link">Catalogo</a>
+        <a href="{{ url_for('cart_page') }}" class="cart-link">
+          <img src="https://cdn-icons-png.flaticon.com/512/3144/3144456.png" alt="Carrito">
+        </a>
         <button type="button" id="logoutBtn" class="btn">Cerrar sesion</button>
       </nav>
     </div>

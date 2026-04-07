@@ -13,7 +13,9 @@
       <nav>
         <span id="welcomeUser" class="nav-link"></span>
         <a href="{{ url_for('catalog_page') }}" class="nav-link">Catalogo</a>
-        <a href="{{ url_for('orders_page') }}" class="nav-link">Mis pedidos</a>
+        <a href="{{ url_for('orders_page') }}" class="orders-link" title="Mis pedidos" aria-label="Mis pedidos">
+          <img src="https://cdn-icons-png.flaticon.com/512/942/942799.png" alt="Pedidos">
+        </a>
         <a href="{{ url_for('cart_page') }}" class="cart-link">
           <img src="https://cdn-icons-png.flaticon.com/512/3144/3144456.png" alt="Carrito">
         </a>

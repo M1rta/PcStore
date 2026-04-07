@@ -244,13 +244,15 @@ body {
 }
 
 .cart-link,
+.orders-link,
 .nav-link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
 }
 
-.cart-link img {
+.cart-link img,
+.orders-link img {
   width: 26px;
   height: 26px;
   filter: brightness(0) invert(1);

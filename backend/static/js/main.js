@@ -19,7 +19,7 @@ function saveCart(userId, cart) {
 function updateUserUI(user) {
   const welcomeUser = document.getElementById('welcomeUser');
   if (welcomeUser) {
-    welcomeUser.textContent = `Hola, ${user.name}`;
+    welcomeUser.textContent = `Bienvenido, ${user.name}`;
   }
 }
 
